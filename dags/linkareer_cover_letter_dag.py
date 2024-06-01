@@ -18,7 +18,7 @@ dag = DAG(
     dag_id="linkareer_cover_letter_dag",
     default_args=default_args,
     description='Scrape Linkareer cover letters and preprocess the data',
-    schedule_interval=@daily
+    schedule_interval="@daily"
 )
 
 def scrape_linkareer_cover_letters(): 
