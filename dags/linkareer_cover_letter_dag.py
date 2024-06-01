@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator 
-from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+#from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
 from datetime import datetime 
 from logger import setup_logger
@@ -47,9 +47,9 @@ def preprocess_data():
     csv_to_vectorDB("./data/Linkareer_Cover_Letter_Data.csv")
 
 # upload data to S3 bucket 
-def upload_to_s3(filename: str, key: str, bucket_name: str) -> None:
-    hook = S3Hook('aws_default')
-    hook.load_file(filename=filename, key=key, bucket_name=bucket_name)
+# def upload_to_s3(filename: str, key: str, bucket_name: str) -> None:
+#     hook = S3Hook('aws_default')
+#     hook.load_file(filename=filename, key=key, bucket_name=bucket_name)
 
 scrape_task = PythonOperator(
     task_id='scrape_linkareer_cover_letters_task',
@@ -63,10 +63,10 @@ preprocess_task = PythonOperator(
     dag=dag,
 )
 
-upload_task = PythonOperator(
-    task_id='upload_to_s3',
-    python_callable=upload_to_s3,
-    dag=dag,
-)
+# upload_task = PythonOperator(
+#     task_id='upload_to_s3',
+#     python_callable=upload_to_s3,
+#     dag=dag,
+# )
 
 scrape_task >> preprocess_task 
