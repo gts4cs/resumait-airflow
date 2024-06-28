@@ -11,10 +11,10 @@ if __name__ == "__main__":
     Linkareer_crawler = LinkareerCoverLetterScraper(log=log, background=True)
     
     # Make directory to save data 
-    if not os.path.exists("./data"):
-        os.mkdir("./data")
-    if not os.path.exists("./data/FaissVectorDB"):
-        os.mkdir("./data/FaissVectorDB")
+    # if not os.path.exists("./data"):
+    #     os.mkdir("./data")
+    # if not os.path.exists("./data/FaissVectorDB"):
+    #     os.mkdir("./data/FaissVectorDB")
         
     try:
         # Scraping Linkareer cover letter from the website
