@@ -69,4 +69,4 @@ upload_task = PythonOperator(
     dag=dag,
 )
 
-scrape_task >> preprocess_task 
+scrape_task >> preprocess_task >> upload_task
