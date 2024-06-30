@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator 
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
-from datetime import datetime 
+from datetime import datetime, date, timezone, timedelta
 from logger import setup_logger
 from preprocess import csv_to_vectorDB
 from scraper import LinkareerCoverLetterScraper
@@ -24,11 +24,6 @@ dag = DAG(
 def scrape_linkareer_cover_letters(): 
     log = setup_logger()
     Linkareer_crawler = LinkareerCoverLetterScraper(log=log, background=True)
-    
-    # if not os.path.exists("./data"):
-    #     os.mkdir("./data")
-    # if not os.path.exists("./data/FaissVectorDB"):
-    #     os.mkdir("./data/FaissVectorDB")
         
     try:
         Linkareer_crawler.open_website("https://linkareer.com/cover-letter/search")
@@ -46,8 +41,14 @@ def preprocess_data():
     csv_to_vectorDB("./data/Linkareer_Cover_Letter_Data.csv")
 
 # upload data to S3 bucket 
-def upload_to_s3(filename: str, key: str, bucket_name: str) -> None:
+# S3 file directory format : daily/yyyymmdd/filename.csv
+def upload_to_s3(filename: str, bucket_name: str) -> None:
     hook = S3Hook('aws_default')
+    file_obj = filename.split('/')[-1]
+    KST = timezone(timedelta(hours=9))
+    time_record = datetime.now(KST).strftime("%Y%m%d")
+   
+    key = "daily/"+ time_record + "/" + file_obj
     hook.load_file(filename=filename, key=key, bucket_name=bucket_name)
 
 scrape_task = PythonOperator(
@@ -65,6 +66,10 @@ preprocess_task = PythonOperator(
 upload_task = PythonOperator(
     task_id='upload_to_s3',
     python_callable=upload_to_s3,
+    op_kwargs = {
+        'filename' : './data/Linkareer_Cover_Letter_Data.csv',
+        'bucket_name': 'resumait-data'
+    },
     dag=dag,
 )
 
