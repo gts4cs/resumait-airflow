@@ -25,10 +25,10 @@ def scrape_linkareer_cover_letters():
     log = setup_logger()
     Linkareer_crawler = LinkareerCoverLetterScraper(log=log, background=True)
     
-    if not os.path.exists("./data"):
-        os.mkdir("./data")
-    if not os.path.exists("./data/FaissVectorDB"):
-        os.mkdir("./data/FaissVectorDB")
+    # if not os.path.exists("./data"):
+    #     os.mkdir("./data")
+    # if not os.path.exists("./data/FaissVectorDB"):
+    #     os.mkdir("./data/FaissVectorDB")
         
     try:
         Linkareer_crawler.open_website("https://linkareer.com/cover-letter/search")
@@ -41,7 +41,6 @@ def scrape_linkareer_cover_letters():
         Linkareer_crawler.save_to_csv("./data/Linkareer_Cover_Letter_Data.csv")
         Linkareer_crawler.close_browser()
     
-
 # vectorize the data 
 def preprocess_data():
     csv_to_vectorDB("./data/Linkareer_Cover_Letter_Data.csv")

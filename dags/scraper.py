@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import time
+import os 
 
 import pandas as pd
 from selenium import webdriver
@@ -115,8 +116,10 @@ class LinkareerCoverLetterScraper:
                 self.log.info("Moving on to the next page")
                 self.driver.execute_script("window.scrollTo(0, 0);")
                 time.sleep(1)
+                
                 # Find out all cover letter in the page
-                for i in range(1, 21):
+                # Airflow Test (1, 21) -> (1, 2)
+                for i in range(1, 2):
                     self.driver.implicitly_wait(1)
                     while True:
                         try:
@@ -317,6 +320,11 @@ class LinkareerCoverLetterScraper:
         Parameters:
             filepath : save destination
         """
-
-        self.pass_data.to_csv(filepath, index=False)
-        self.log.info("Data saved as CSV format")
+        # Check if the filepath exists in local file directory
+        if os.path.exists(filepath):
+            self.pass_data.to_csv(filepath, index=False)
+            self.log.info("Data saved as CSV format")
+        else: 
+            os.mkdir(filepath)
+            self.pass_data.to_csv(filepath, index=False)
+            self.log.info("Data saved as CSV format")
