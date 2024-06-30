@@ -321,10 +321,11 @@ class LinkareerCoverLetterScraper:
             filepath : save destination
         """
         # Check if the filepath exists in local file directory
+        print("filepath:", filepath)
         if os.path.exists(filepath):
             self.pass_data.to_csv(filepath, index=False)
             self.log.info("Data saved as CSV format")
         else: 
-            os.mkdir(filepath)
+            os.makedirs("./data/", exist_ok=True)
             self.pass_data.to_csv(filepath, index=False)
             self.log.info("Data saved as CSV format")
