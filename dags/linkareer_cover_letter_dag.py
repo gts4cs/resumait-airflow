@@ -51,19 +51,19 @@ def upload_to_s3(filename: str, bucket_name: str) -> None:
     key = "daily/"+ time_record + "/" + file_obj
     hook.load_file(filename=filename, key=key, bucket_name=bucket_name)
 
-scrape_task = PythonVirtualenvOperator(
+scrape_task = PythonOperator(
     task_id='scrape_linkareer_cover_letters_task',
     python_callable=scrape_linkareer_cover_letters,
     dag=dag,
 )
 
-preprocess_task = PythonVirtualenvOperator(
+preprocess_task = PythonOperator(
     task_id='preprocess_data_task',
     python_callable=preprocess_data,
     dag=dag,
 )
 
-upload_task = PythonVirtualenvOperator(
+upload_task = PythonOperator(
     task_id='upload_to_s3',
     python_callable=upload_to_s3,
     op_kwargs = {
