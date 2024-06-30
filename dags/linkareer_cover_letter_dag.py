@@ -1,5 +1,5 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator 
+from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
 from datetime import datetime, date, timezone, timedelta
@@ -51,19 +51,19 @@ def upload_to_s3(filename: str, bucket_name: str) -> None:
     key = "daily/"+ time_record + "/" + file_obj
     hook.load_file(filename=filename, key=key, bucket_name=bucket_name)
 
-scrape_task = PythonOperator(
+scrape_task = PythonVirtualenvOperator(
     task_id='scrape_linkareer_cover_letters_task',
     python_callable=scrape_linkareer_cover_letters,
     dag=dag,
 )
 
-preprocess_task = PythonOperator(
+preprocess_task = PythonVirtualenvOperator(
     task_id='preprocess_data_task',
     python_callable=preprocess_data,
     dag=dag,
 )
 
-upload_task = PythonOperator(
+upload_task = PythonVirtualenvOperator(
     task_id='upload_to_s3',
     python_callable=upload_to_s3,
     op_kwargs = {
